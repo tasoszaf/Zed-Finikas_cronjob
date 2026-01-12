@@ -21,8 +21,7 @@ jobs:
         run: pip install requests pandas openpyxl
 
       - name: Run Zed Script
-          env:
+        env:
           SMOOBU_API_KEY: ${{ secrets.SMOOBU_API_KEY }}
           SMOOBU_CUSTOMER_ID: ${{ secrets.SMOOBU_CUSTOMER_ID }}
-        run: |
-          python zed_smartpr.py
+        run: python zed_smartpr.py
