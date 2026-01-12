@@ -33,7 +33,7 @@ TOTAL_ROOMS = len(APARTMENTS)
 TEST_MODE = True  # True = εμφανίζει τιμές, False = στέλνει στο Smoobu
 
 # Excel
-df = pd.read_excel("/Users/anastasioszafeiriou/Desktop/data_zed.xlsx")
+df = pd.read_excel("data_zed.xlsx")
 df['date'] = pd.to_datetime(df['date'])  # ασφαλής σύγκριση ημερομηνιών
 
 headers = {
