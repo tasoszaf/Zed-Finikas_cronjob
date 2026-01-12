@@ -2,7 +2,7 @@ name: Smoobu Pricing Full
 
 on:
   schedule:
-    - cron: "0 * * * *"   # κάθε 1 ώρα
+    - cron: "0 */2 * * *"   # κάθε 2 ώρες
   workflow_dispatch:       # για χειροκίνητο run
 
 jobs:
