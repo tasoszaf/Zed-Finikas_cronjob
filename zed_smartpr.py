@@ -160,7 +160,7 @@ def send_price_to_smoobu(apartment_id, date_str, price):
 # -----------------------------
 current_datetime = datetime.now()
 start = datetime.now().date()
-end = start + timedelta(days=210) 
+end = start + timedelta(days=120) 
 current = start
 
 while current <= end:
