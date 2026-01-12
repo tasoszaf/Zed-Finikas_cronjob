@@ -1,4 +1,4 @@
-name: Smoobu Pricing Full
+name: Finikas Cron Job
 
 on:
   schedule:
@@ -22,7 +22,7 @@ jobs:
         run: |
           pip install requests pandas openpyxl python-dateutil
 
-      - name: Run pricing script
+      - name: Run Finikas script
         env:
           SMOOBU_API_KEY: ${{ secrets.SMOOBU_API_KEY }}
           SMOOBU_CUSTOMER_ID: ${{ secrets.SMOOBU_CUSTOMER_ID }}
