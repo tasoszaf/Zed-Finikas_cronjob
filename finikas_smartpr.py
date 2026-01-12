@@ -166,7 +166,7 @@ def send_price(apartment_id, date_str, price):
 results = []
 
 start = datetime.now().date()
-end = start + timedelta(days=210) 
+end = start + timedelta(days=190) 
 
 current = start
 
