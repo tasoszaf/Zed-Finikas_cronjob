@@ -2,7 +2,7 @@ name: Finikas Cron Job
 
 on:
   schedule:
-    - cron: "0 */2 * * *"   # κάθε 2 ώρες
+    - cron: "0 */4 * * *"   # κάθε 4 ώρες
   workflow_dispatch:       # για χειροκίνητο run
 
 jobs:
