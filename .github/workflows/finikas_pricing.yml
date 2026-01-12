@@ -1,31 +1,27 @@
 name: Smoobu Pricing Full
 
 on:
-  # Κάθε 1 ώρα
   schedule:
-    - cron: "0 * * * *"
-  # Για χειροκίνητο run
-  workflow_dispatch:
+    - cron: "0 * * * *"   # κάθε 1 ώρα
+  workflow_dispatch:       # για χειροκίνητο run
 
 jobs:
   run_pricing:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout του repo
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      # 2️⃣ Setup Python
-      - uses: actions/setup-python@v5
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      # 3️⃣ Εγκατάσταση dependencies
       - name: Install dependencies
         run: |
           pip install requests pandas openpyxl python-dateutil
 
-      # 4️⃣ Εκτέλεση του script finikas_smartpr.py
       - name: Run pricing script
         env:
           SMOOBU_API_KEY: ${{ secrets.SMOOBU_API_KEY }}
