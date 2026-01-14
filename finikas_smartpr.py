@@ -22,24 +22,15 @@ APARTMENTS = [
     2715273, 2715193, 2715208, 2715213, 2715228, 2715233
 ]
 
-TEST_MODE = False
+TEST_MODE = True
 EXCEL_PATH = "data_finikas.xlsx"
 
 LONG_TERM_LIMIT = 240
-LONG_TERM_PREMIUMS = {
-    2715198: 15,
-    2715203: 15,
-    2715218: 15,
-    2715223: 15,
-    2715238: 15,
-    2715273: 15,
-    2715193: 20,
-    2715208: 20,
-    2715213: 20,
-    2715228: 20,
-    2715233: 30
+MIN_PRICE_SAME_DAY_BY_MONTH = {
+    1: 50, 2: 50, 3: 55, 4: 60,
+    5: 70, 6: 80, 7: 80, 8: 80,
+    9: 80, 10: 70, 11: 50, 12: 50
 }
-
 # =====================================================
 # LOAD EXCEL
 # =====================================================
@@ -97,19 +88,14 @@ def calculate_price(current_occ, target_date, today, apartment_id=None):
     target_price = float(row["target_price"].iloc[0])
     max_price = float(row["max_price"].iloc[0])
 
-    # -------- SPECIAL CASE: TODAY --------
-    if difference == 0:
-        return min_price, None, min_price, max_price
-
-    # -------- LONG TERM --------
+    # -------- LONG TERM (ΟΛΑ ΙΔΙΑ ΤΙΜΗ) --------
     if difference > LONG_TERM_LIMIT:
-        premium = LONG_TERM_PREMIUMS.get(apartment_id, 20)  # default 20
-        price = min(max_price, target_price + premium)
-        return round(price, 2), None, min_price, max_price
+        final_price = target_price + 20
+        return round(final_price, 2), None, None, None
 
     # -------- SCORE BASED --------
     if current_occ == 0:
-        pace_ratio = (difference - LONG_TERM_LIMIT) / difference
+        pace_ratio = (difference - 240) / difference
         x = pace_ratio
         occupancy_ratio = None
     else:
@@ -208,19 +194,13 @@ while current <= end:
 
     # -------- SPECIAL CASE: TODAY --------
     if difference == 0:
-        print(f"\n📅 {date_str} | Today → all apartments get min_price={min_price}€")
-        for apt in unique_available:
-            p = min_price
-            print(f"🏠 Apt {apt} → {p} €")  
-            send_price(apt, date_str, p)
-            results.append({
-                "date": date_str,
-                "apartment_id": apt,
-                "price": p,
-                "occupancy": occ,
-                "base_price": min_price,
-                "x": None
-            })
+        same_day_price = MIN_PRICE_SAME_DAY_BY_MONTH.get(current.month, min_price)
+        print(f"\n📅 {date_str} | Today → {same_day_price}€")
+
+        for apt in available:
+            send_price(apt, date_str, same_day_price)
+            print(f"🏠 Apt {apt} → {same_day_price} €")
+
         current += timedelta(days=1)
         continue
 
