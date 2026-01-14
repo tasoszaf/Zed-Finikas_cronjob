@@ -28,7 +28,7 @@ MIN_PRICE_SAME_DAY_BY_MONTH = {
 }
 
 TOTAL_ROOMS = len(APARTMENTS)
-TEST_MODE = True  # True για δοκιμή, False για αποστολή
+TEST_MODE = False  # True για δοκιμή, False για αποστολή
 
 # Excel
 df = pd.read_excel("data_zed.xlsx")
