@@ -217,6 +217,9 @@ def send_price(apartment_id, date_str, price, retries=3, timeout=10):
 # =====================================================
 # MAIN LOOP
 # =====================================================
+# =====================================================
+# MAIN LOOP
+# =====================================================
 now = datetime.now()
 current = now.date()
 end = current + timedelta(days=90)
@@ -224,12 +227,14 @@ end = current + timedelta(days=90)
 while current <= end:
     date_str = current.strftime("%Y-%m-%d")
 
+    # Παίρνουμε πληρότητα και διαθέσιμα
     occ, available = get_total_occupancy(date_str, APARTMENTS)
     if occ is None or not available:
         print(f"❌ {date_str} | No available apartments or failed to get occupancy")
         current += timedelta(days=1)
         continue
 
+    # Υπολογισμός τιμής
     price, x, min_p, max_p = calculate_price(occ, current, now)
     if price is None:
         print(f"⚠ {date_str} | Pricing calculation failed")
@@ -239,24 +244,27 @@ while current <= end:
     # Κρατάμε μόνο διαθέσιμα και με σειρά APARTMENTS
     available_sorted = [apt for apt in APARTMENTS if apt in available]
 
-    # Υπολογισμός τιμών για κάθε διαμέρισμα
-    if max_p is None or len(available_sorted) == 0:
-        # long-term → ίδια τιμή
-        for apt in available_sorted:
-            print(f"✓ {date_str} | Apt {apt} → {price}")
-            send_price(apt, date_str, price)
+    # Υπολογισμός step αν χρειάζεται
+    if max_p is None or len(available_sorted) == 1:
+        step = 0
     else:
         step = (max_p - price) / len(available_sorted)
-        for i, apt in enumerate(available_sorted):
-            price_i = price + i * step
-            price_i = min(price_i, max_p)
-            price_i = round(price_i, 1)
-            print(f"✓ {date_str} | Apt {apt} → {price_i}")
-            send_price(apt, date_str, price_i)
 
-    # Εκτύπωση συνολικής πληρότητας, x και base price
-    print(f"✅ {date_str} | Occ={occ:.4f} | x={x} | Base Price={price}\n")
+    
+    for i, apt in enumerate(available_sorted):
+        apt_price = price + i * step
+        apt_price = min(apt_price, max_p) if max_p is not None else apt_price
+        apt_price = round(apt_price, 1)
+
+        # Print ακόμα και αν TEST_MODE=False
+        print(f"✓ Sent {apt_price}€ for {date_str} → Smoobu")
+        send_price(apt, date_str, apt_price)
+
+    # Τελική γραμμή summary για την ημέρα
+    print(f"✅ {date_str} | Occ={occ:.4f} | x={x} | Base Price={round(price,1)}\n")
+
     current += timedelta(days=1)
 
 print("\nFinished processing all valid dates.")
+
 
