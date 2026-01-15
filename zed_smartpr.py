@@ -245,7 +245,7 @@ while current <= end:
             p = round(min(price + i * step, max_p), 1)
             send_price(apt, date_str, p)
 
-    print(f"✅ {date_str} | Occ={occ:.2f} | x={x} | Base={price}")
+    print(f"✅ {date_str} | Occ={occ:.4f} | x={x} | Base={price}")
     current += timedelta(days=1)
 
 print("\nFinished processing all valid dates.")
