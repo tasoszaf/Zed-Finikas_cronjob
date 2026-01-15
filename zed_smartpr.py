@@ -241,21 +241,24 @@ while current <= end:
     # Κρατάμε μόνο διαθέσιμα και με σειρά APARTMENTS
     available_sorted = [apt for apt in APARTMENTS if apt in available]
 
-    # Υπολογισμός step αν χρειάζεται
-    if max_p is None or len(available_sorted) == 1:
-        step = 0
+    if max_p is None:
+        # Long-term → ίδια τιμή για όλα τα διαθέσιμα
+        for apt in available_sorted:
+            print(f"✓ Sent {round(price,1)}€ for {date_str} → Smoobu")
+            send_price(apt, date_str, price)
     else:
-        step = (max_p - price) / len(available_sorted)
+        # Υπολογισμός step ώστε η τιμή να φτάνει ακριβώς max_p στο τελευταίο διαμέρισμα
+        if len(available_sorted) == 1:
+            step = 0
+        else:
+            step = (max_p - price) / (len(available_sorted) - 1)
 
-    
-    for i, apt in enumerate(available_sorted):
-        apt_price = price + i * step
-        apt_price = min(apt_price, max_p) if max_p is not None else apt_price
-        apt_price = round(apt_price, 1)
-
-        # Print ακόμα και αν TEST_MODE=False
-        print(f"✓ Sent {apt_price}€ for {date_str} → Smoobu")
-        send_price(apt, date_str, apt_price)
+        for i, apt in enumerate(available_sorted):
+            price_i = price + i * step
+            price_i = min(price_i, max_p)
+            price_i = round(price_i, 1)
+            print(f"✓ Sent {price_i}€ for {date_str} → Smoobu")
+            send_price(apt, date_str, price_i)
 
     # Τελική γραμμή summary για την ημέρα
     print(f"✅ {date_str} | Occ={occ:.4f} | x={x} | Base Price={round(price,1)}\n")
@@ -263,5 +266,6 @@ while current <= end:
     current += timedelta(days=1)
 
 print("\nFinished processing all valid dates.")
+
 
 
